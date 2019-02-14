@@ -1,6 +1,6 @@
 package project2;
+
 import javax.swing.*;
-import java.awt.*;
 
 
 public class MineSweeperGUI {

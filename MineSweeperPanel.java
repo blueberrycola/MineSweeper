@@ -1,14 +1,10 @@
 package project2;
 
-import project2.Cell;
-import project2.MineSweeperGame;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class MineSweeperPanel extends JPanel {
     private int totMines;
@@ -34,7 +30,7 @@ public class MineSweeperPanel extends JPanel {
     private Menu FileMenu;
     private MenuBar menuBar, devBar;
     private MenuItem saveScore, leadScore, highScore;
-    private MenuItem devDisplay, devRandomizer;
+    private MenuItem devDisplay, devRandomizeBomb;
     private ActionListener tileClick;
     // image icon order: default, flag, bomb, scoreOne, scoreTwo, scoreThree, scoreFour
 
@@ -94,15 +90,23 @@ public class MineSweeperPanel extends JPanel {
             }
         }
     }
+
     public int getMineCount(){
         return totMines;
     }
 
     private class ButtonListener implements ActionListener{
         public void actionPerformed (ActionEvent event) {
-
+            for(int row = 0; row < 10; row++) {
+                for(int col = 0; col < 10; col++) {
+                    if(board[row][col] == event.getSource()) {
+                        game.select(row, col);
+                    }
+                }
+            }
         }
     }
+
 
 
 

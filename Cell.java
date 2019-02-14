@@ -10,6 +10,7 @@ public class Cell {
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
+        int mineCount = 0;
     }
     public boolean isExposed() {
         return false;
@@ -21,6 +22,10 @@ public class Cell {
 
     public boolean isMine() {
         return false;
+    }
+
+    public void setMine(boolean flag) {
+
     }
 
 

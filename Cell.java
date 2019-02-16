@@ -5,27 +5,46 @@ public class Cell {
     private boolean isFlagged;
     private boolean isExposed;
     private boolean isMine;
-    private int x, y;
 
-    public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
-        int mineCount = 0;
+    public Cell() {
+        mineCount = 0;
+        isFlagged = false;
+        isExposed = false;
+        isMine = false;
+    }
+    public Cell(int mineCount, boolean isFlagged, boolean isExposed, boolean isMine) {
+        this.mineCount = mineCount;
+        this.isFlagged = isFlagged;
+        this.isExposed = isExposed;
+        this.isMine = isMine;
     }
     public boolean isExposed() {
-        return false;
+        if(this.isExposed) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isFlagged() {
-        return false;
+        if(this.isFlagged) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isMine() {
-        return false;
+        if(this.isMine) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public void setMine(boolean flag) {
-
+        this.isMine = flag;
     }
 
 

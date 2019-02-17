@@ -82,21 +82,25 @@ public class MineSweeperPanel extends JPanel {
     }
 
     private void displayBoard() {
+
         for(int row = 0; row < 10; row++) {
             for(int col = 0; col < 10; col++) {
                 iCell = game.getCell(row, col);
 
-                if(iCell.isExposed()) {
-                    board[row][col].setEnabled(true);
-                } else {
+                if(iCell.isExposed() ){
                     board[row][col].setText("" + getMineCount());
+                }
+                else {
+                    board[row][col].setText(" ");
                 }
                 //Draws bomb image on board
                 if(iCell.isMine()) {
                     board[row][col].setIcon(new ImageIcon(tileImages[6]));
                 }
+
             }
         }
+        //if()
     }
 
 
@@ -105,6 +109,8 @@ public class MineSweeperPanel extends JPanel {
     public int getMineCount(){
         return totMines;
     }
+    public void setMineCount(int mine) {totMines = mine;}
+
 
     private class ButtonListener implements ActionListener{
         public void actionPerformed (ActionEvent event) {
@@ -112,7 +118,12 @@ public class MineSweeperPanel extends JPanel {
                 for(int col = 0; col < 10; col++) {
                     if(board[row][col] == event.getSource()) {
                         game.select(row, col);
+                        board[row][col].setEnabled(false);
+
                         System.out.println("DEBUG: Selected tile at x: " + col + " ,y: " + row);
+                        System.out.println(game.getMineArea());
+                        totMines = game.getMineArea();
+                        displayBoard();
                     }
                 }
             }

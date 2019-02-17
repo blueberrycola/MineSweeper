@@ -47,6 +47,10 @@ public class Cell {
         this.isMine = flag;
     }
 
+    public void setExposed(boolean flag) {
+        this.isExposed = flag;
+    }
+
 
 
 

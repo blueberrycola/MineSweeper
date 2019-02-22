@@ -5,6 +5,8 @@ public class Cell {
     private boolean isFlagged;
     private boolean isExposed;
     private boolean isMine;
+    //Overriding JButton.isSelected because it makes the image icons grey which is boring
+    private boolean isSelected;
 
     public Cell() {
         mineCount = 0;
@@ -34,6 +36,9 @@ public class Cell {
         }
     }
 
+
+
+
     public boolean isMine() {
         if(this.isMine) {
             return true;
@@ -43,13 +48,12 @@ public class Cell {
 
     }
 
-    public void setMine(boolean flag) {
-        this.isMine = flag;
-    }
+    public void setMine(boolean flag) { this.isMine = flag; }
 
-    public void setExposed(boolean flag) {
-        this.isExposed = flag;
-    }
+    public void setExposed(boolean flag) { this.isExposed = flag; }
+
+    public void setFlagged(boolean flag) { this.isFlagged = flag; }
+
 
 
 

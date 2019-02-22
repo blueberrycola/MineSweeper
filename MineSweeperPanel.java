@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MineSweeperPanel extends JPanel {
     private int totMines;
@@ -13,12 +14,13 @@ public class MineSweeperPanel extends JPanel {
     private Cell iCell;
     private JButton quitButton;
 
+
     private MineSweeperGame game;
     private JPanel winLoss, buttonPanel;
     private Menu FileMenu;
-    private MenuBar menuBar, devBar;
-    private MenuItem saveScore, leadScore, highScore;
-    private MenuItem devDisplay, devRandomizeBomb;
+    private JMenuBar menuBar;
+    private JMenuItem resetGame;
+    private JMenuItem devDisplay, devRandomizeBomb;
     private ActionListener tileClick;
 
     /***********************************
@@ -29,12 +31,12 @@ public class MineSweeperPanel extends JPanel {
      * 2: scoreTwo
      * 3: scoreThree
      * 4: scoreFour
-     * 5: pressedTile
+     * 5: rareScore
      * 6: bombTile
      **********************************/
-    private Image[] tileImages = new Image[7];
+    private Image[] tileImages = new Image[8];
     private String[] fileImg = {"unpressedTile.jpg", "scoreOne.jpg", "scoreTwo.jpg", "scoreThree.jpg",
-            "scoreFour.jpg", "pressedTile.jpg", "bombTile.jpg"};
+            "scoreFour.jpg", "rareScore.jpg", "bombTile.jpg", "pressedTile.jpg"};
 
 
 
@@ -79,6 +81,7 @@ public class MineSweeperPanel extends JPanel {
         //Horizontal glue + JMenu + Score Panel
 
         displayBoard();
+
     }
 
     private void displayBoard() {
@@ -87,29 +90,62 @@ public class MineSweeperPanel extends JPanel {
             for(int col = 0; col < 10; col++) {
                 iCell = game.getCell(row, col);
 
-                if(iCell.isExposed() ){
-                    board[row][col].setText("" + getMineCount());
-                }
-                else {
-                    board[row][col].setText(" ");
+                if(iCell.isExposed() && (!iCell.isMine())){
+                    int temp = getMineCount();
+
+
+                    if(temp == 1) {board[row][col].setIcon(new ImageIcon (tileImages[1]));}
+                    else if(temp == 2) {board[row][col].setIcon(new ImageIcon (tileImages[2]));}
+                    else if(temp == 3) {board[row][col].setIcon(new ImageIcon (tileImages[3]));}
+                    else if(temp == 4) {board[row][col].setIcon(new ImageIcon (tileImages[4]));}
+                    else if(temp >= 5) {board[row][col].setIcon(new ImageIcon (tileImages[5]));}
+
+
+                    board[row][col].setText(""  + getMineCount());
+                    iCell.setExposed(false);
                 }
                 //Draws bomb image on board
                 if(iCell.isMine()) {
                     board[row][col].setIcon(new ImageIcon(tileImages[6]));
                 }
 
+
             }
         }
         //if()
+    }
+    private void setupMenu() {
+        //Initialization of JMenuBar + etc
+
+        menuBar = new JMenuBar();
+        add(menuBar);
+
+        JMenu fileMenu = new JMenu("Game");
+        menuBar.add(fileMenu);
+
+        //Initialization of menu options
+        resetGame = new JMenuItem("Reset");
+        fileMenu.add(resetGame);
+        resetGame.addActionListener(e -> reset());
+
+    }
+
+    public void reset() {
+        System.out.println("FIXME: ADD RESET BUTTON");
+    }
+
+    public void gameOver() {
+
     }
 
 
 
 
     public int getMineCount(){
-        return totMines;
+        return game.getScanMineCount();
     }
-    public void setMineCount(int mine) {totMines = mine;}
+    private void setTotMines(int tot) {totMines = tot;}
+
 
 
     private class ButtonListener implements ActionListener{
@@ -117,12 +153,16 @@ public class MineSweeperPanel extends JPanel {
             for(int row = 0; row < 10; row++) {
                 for(int col = 0; col < 10; col++) {
                     if(board[row][col] == event.getSource()) {
+                        iCell = game.getCell(row, col);
+                        if(iCell.isMine()) {
+                            reset();
+                        }
                         game.select(row, col);
-                        board[row][col].setEnabled(false);
+
+
 
                         System.out.println("DEBUG: Selected tile at x: " + col + " ,y: " + row);
-                        System.out.println(game.getMineArea());
-                        totMines = game.getMineArea();
+                        System.out.println(game.getScanMineCount());
                         displayBoard();
                     }
                 }

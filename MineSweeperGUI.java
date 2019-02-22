@@ -12,7 +12,6 @@ public class MineSweeperGUI extends MineSweeperPanel {
             frame.getContentPane().add(panel);
 
 
-
             frame.pack();
             frame.setVisible(true);
 

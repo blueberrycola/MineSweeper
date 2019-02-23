@@ -6,7 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MineSweeperPanel extends JPanel {
     private int totMines;
@@ -33,10 +32,11 @@ public class MineSweeperPanel extends JPanel {
      * 4: scoreFour
      * 5: rareScore
      * 6: bombTile
+     * 7: pressedTile
      **********************************/
     private Image[] tileImages = new Image[8];
-    private String[] fileImg = {"unpressedTile.jpg", "scoreOne.jpg", "scoreTwo.jpg", "scoreThree.jpg",
-            "scoreFour.jpg", "rareScore.jpg", "bombTile.jpg", "pressedTile.jpg"};
+    private String[] fileImg = {"resources/unpressedTile.jpg", "resources/scoreOne.jpg", "resources/scoreTwo.jpg", "resources/scoreThree.jpg",
+            "resources/scoreFour.jpg", "resources/rareScore.jpg", "resources/bombTile.jpg", "resources/pressedTile.jpg"};
 
 
 
@@ -56,13 +56,13 @@ public class MineSweeperPanel extends JPanel {
          *
          */
         for(int i = 0; i < 7; i++) {
-            String strIO = "resources/";
+            String strIO = "project2/resources/";
             String filepath = "";
             try {
                 tileImages[i] = ImageIO.read(getClass().getResource(fileImg[i]));
 
             } catch (IOException ex) {
-                System.out.println("FIXME:");
+
             }
         }
 

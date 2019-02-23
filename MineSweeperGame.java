@@ -9,7 +9,6 @@ public class MineSweeperGame {
     private GameStatus status;
     private int totalMineCount = 10;
     private int mineCount;
-    private boolean flagged, exposed, isMine;
 
 
     public MineSweeperGame() {
@@ -64,123 +63,113 @@ public class MineSweeperGame {
         int temp = 0;
 
         //initial click check for mines
-        if(board[row][col].isMine()) {
+        if (board[row][col].isMine()) {
             status = GameStatus.Lost;
-            JOptionPane.showMessageDialog(null,"YOU LOST!");
+            JOptionPane.showMessageDialog(null, "YOU LOST!");
         } else {
             //if not a mine
-            board[row][col].setExposed(true);
 
-            //Qualifier for 3x3 scan of tiles (avoids corners)
-
-            //FIXME replace 9 and 0 with the min and max
-            if ((row < 9 && row > 0) && (col < 9 && col > 0)) {
-
-                if (board[row][col - 1].isMine()) {
-                    temp++;
-                }
-                if (board[row][col + 1].isMine()) {
-                    temp++;
-                }
-
-                if (board[row + 1][col].isMine()) {
-                    temp++;
-                }
-                if (board[row + 1][col - 1].isMine()) {
-                    temp++;
-                }
-                if (board[row + 1][col + 1].isMine()) {
-                    temp++;
-                }
-
-                if (board[row - 1][col].isMine()) {
-                    temp++;
-                }
-                if (board[row - 1][col - 1].isMine()) {
-                    temp++;
-                }
-                if (board[row - 1][col + 1].isMine()) {
-                    temp++;
-                }
-                if(temp == 0) {
+                if (temp == 0 && !board[row][col].isExposed()) {
                     //RECURSION START; the code below just shows a blank 3x3 on the gui
-                    board[row][col - 1].setExposed(true);
-                    board[row][col + 1].setExposed(true);
-                    board[row + 1][col].setExposed(true);
-                    board[row + 1][col - 1].setExposed(true);
-                    board[row + 1][col + 1].setExposed(true);
-                    board[row - 1][col].setExposed(true);
-                    board[row - 1][col - 1].setExposed(true);
-                    board[row - 1][col + 1].setExposed(true);
+                    board[row][col].setExposed(true);
+                    select(row + 1, col);
+                    select(row - 1, col);
+
+
+                    select(row, col - 1);
+                    select(row, col + 1);
+
 
                 }
 
-            }
 
-            //Upper left corner
+                //Upper left corner
             else if (row == 0 && col == 0) {
-                if (!board[row][col].isMine()) {
-                    board[row][col].setExposed(true);
-                    if (!board[row][col + 1].isMine()) {
-                        board[row][col + 1].setExposed(true);
-                    } else { temp++; }
-                    if (!board[row + 1][col].isMine()) {
-                        board[row + 1][col].setExposed(true);
-                    } else {temp++;}
+                    if (!board[row][col].isMine()) {
+                        board[row][col].setExposed(true);
+                        if (!board[row][col + 1].isMine()) {
+                            board[row][col + 1].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                        if (!board[row + 1][col].isMine()) {
+                            board[row + 1][col].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                    }
+
+                }
+                //Upper right corner
+                else if (row == 0 && col == 9) {
+                    if (!board[row][col].isMine()) {
+                        board[row][col].setExposed(true);
+                        if (!board[row + 1][col].isMine()) {
+                            board[row + 1][col].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                        if (!board[row][col - 1].isMine()) {
+                            board[row][col - 1].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                    }
+                }
+                //Bottom left corner
+                else if (row == 9 && col == 0) {
+                    if (!board[row][col].isMine()) {
+                        board[row][col].setExposed(true);
+                        if (!board[row - 1][col].isMine()) {
+                            board[row - 1][col].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                        if (!board[row][col + 1].isMine()) {
+                            board[row][col + 1].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                    }
                 }
 
-            }
-            //Upper right corner
-            else if (row == 0 && col == 9) {
-                if (!board[row][col].isMine()) {
-                    board[row][col].setExposed(true);
-                    if (!board[row + 1][col].isMine()) {
-                        board[row + 1][col].setExposed(true);
-                    }else{temp++;}
-                    if (!board[row][col - 1].isMine()) {
-                        board[row][col - 1].setExposed(true);
-                    }else{temp++;}
+                //Bottom right corner
+                else if (row == 9 && col == 9) {
+                    if (!board[row][col].isMine()) {
+                        board[row][col].setExposed(true);
+                        if (!board[row - 1][col].isMine()) {
+                            board[row - 1][col].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                        if (!board[row][col - 1].isMine()) {
+                            board[row][col - 1].setExposed(true);
+                        } else {
+                            temp++;
+                        }
+                    }
                 }
-            }
-            //Bottom left corner
-            else if (row == 9 && col == 0) {
-                if (!board[row][col].isMine()) {
-                    board[row][col].setExposed(true);
-                    if (!board[row - 1][col].isMine()) {
-                        board[row - 1][col].setExposed(true);
-                    }else{temp++;}
-                    if (!board[row][col + 1].isMine()) {
-                        board[row][col + 1].setExposed(true);
-                    }else{temp++;}
+                //Left horizontal
+                else if ((row >= 1 && row <= 9) && col == 0) {
+                    if (!board[row][col].isMine()) {
+                        board[row][col].setExposed(true);
+
+                    }
                 }
-            }
+                //Right horizontal
+                else if ((col >= 1 && col <= 9) && row == 0) {
 
-            //Bottom right corner
-            else if (row == 9 && col == 9) {
-                if (!board[row][col].isMine()) {
-                    board[row][col].setExposed(true);
-                    if (!board[row - 1][col].isMine()) {
-                        board[row - 1][col].setExposed(true);
-                    }else{temp++;}
-                    if (!board[row][col - 1].isMine()) {
-                        board[row][col - 1].setExposed(true);
-                    }else{temp++;}
                 }
-            }
-            //Left horizontal
-            else if((row >= 1 && row <= 9) && col == 0) {
+                //vertical edges
+
+                mineCount = temp;
+
+                //RECURSIVE
+
 
             }
-            //Right horizontal
-            else if((col >= 1 && col <= 9) && row == 0) {
 
-            }
-            //vertical edges
-
-            mineCount = temp;
         }
 
-
-    }
     public int getScanMineCount() {return mineCount;}
 }

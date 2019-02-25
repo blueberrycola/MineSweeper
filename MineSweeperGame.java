@@ -4,13 +4,14 @@ import javax.swing.*;
 import java.util.*;
 
 public class MineSweeperGame {
-    int mineArea = 0;
     private Cell[][] board;
     private GameStatus status;
     private int totalMineCount = 10;
     private int mineCount;
 
-
+    /****
+     * game logic object constructor
+     */
     public MineSweeperGame() {
         board = new Cell[10][10];
 
@@ -37,139 +38,141 @@ public class MineSweeperGame {
 
     }
 
+    /****
+     *
+     * @param row
+     * @param col
+     * @return Cell Object
+     */
     public Cell getCell(int row, int col) {
         return board[row][col];
     }
 
-    public void resetTiles() {
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
-                if (board[row][col].isMine()) {
-                    board[row][col].setMine(false);
+    /****
+     * Selects the tile you chose, if no neighboring mines start recursion attempt
+     * @param row
+     * @param col
+     */
+    public void select(int row, int col) {
+        mineCount = 0;
+        bombCheck(row, col);
+
+        if ((row >= 0 && row < 10) && (col >= 0 && col < 10)) {
+
+            if (!board[row][col].isExposed() && mineCount == 0) {
+                board[row][col].setExposed(true);
+
+                select(row + 1, col);
+                select(row - 1, col);
+                select(row, col - 1);
+                select(row, col + 1);
+            } else {
+                board[row][col].setMineCount(mineCount);
+                System.out.println("Bombcheck equals " + board[row][col].getMineCount());
+
+            }
+
+
+
+        }
+    }
+
+    /****
+     * Checks the amount of neighboring bombs next to the selected tile, only used in select()
+     * @param row
+     * @param col
+     * @return amount of bombs in a 3x3 area or a 2x3 area or a corner
+     */
+    private void bombCheck(int row, int col) {
+        int temp = 0;
+        //Inside the perimeter
+        if((row < 9 && row > 0) && (col < 9 && col > 0)) {
+            //middle two between select
+            if (board[row + 1][col].isMine()) {
+                temp++;
+            }
+            if (board[row - 1][col].isMine()) {
+                temp++;
+            }
+            //top 3
+            if (board[row - 1][col - 1].isMine()) {
+                temp++;
+            }
+            if (board[row][col - 1].isMine()) {
+                temp++;
+            }
+            if (board[row + 1][col - 1].isMine()) {
+                temp++;
+            }
+            //bottom 3
+            if (board[row - 1][col + 1].isMine()) {
+                temp++;
+            }
+            if (board[row][col + 1].isMine()) {
+                temp++;
+            }
+            if (board[row + 1][col + 1].isMine()) {
+                temp++;
+            }
+            mineCount = temp;
+            temp = 0;
+
+        }
+        //0-9 y axis, x always 0
+        if((row >= 0 && row <= 9) && col == 0) {
+            //Upper Corner
+            if(row == 0) {
+                if(board[row + 1][col].isMine()) {
+                    temp++;
                 }
-                if (board[row][col].isExposed()) {
-                    //FIXME:
-                    System.out.println("See fixme on resetTiles()");
+                if(board[row][col + 1].isMine()) {
+                    temp++;
                 }
-                if (board[row][col].isFlagged()) {
-                    board[row][col].setFlagged(false);
+                mineCount = temp;
+                temp = 0;
+            //Lower Corner
+            } else if(row == 9) {
+                if(board[row - 1][col].isMine()) {
+                    temp++;
+                }
+                if(board[row][col + 1].isMine()) {
+                    temp++;
+                }
+                mineCount = temp;
+                temp = 0;
+            } else {
+                if(board[row + 1][col].isMine()) {
+                    temp++;
+                }
+                if(board[row - 1][col].isMine()) {
+                    temp++;
+                }
+                if(board[row][col + 1].isMine()) {
+                    temp++;
+                }
+                if(board[row + 1][col + 1].isMine()) {
+                    temp++;
+                }
+                if(board[row - 1][col + 1].isMine()) {
+                    temp++;
                 }
             }
+            mineCount = temp;
+            temp = 0;
         }
+        // Right vertical edge
+        if((row >= 0 && row <= 9) && col == 9) {
+            //Corner
+        }
+
+        mineCount = temp;
+
 
     }
 
-    public void select(int row, int col) {
-        int temp = 0;
-
-        //initial click check for mines
-        if (board[row][col].isMine()) {
-            status = GameStatus.Lost;
-            JOptionPane.showMessageDialog(null, "YOU LOST!");
-        } else {
-            //if not a mine
-
-                if (temp == 0 && !board[row][col].isExposed()) {
-                    //RECURSION START; the code below just shows a blank 3x3 on the gui
-                    board[row][col].setExposed(true);
-                    select(row + 1, col);
-                    select(row - 1, col);
-
-
-                    select(row, col - 1);
-                    select(row, col + 1);
-
-
-                }
-
-
-                //Upper left corner
-            else if (row == 0 && col == 0) {
-                    if (!board[row][col].isMine()) {
-                        board[row][col].setExposed(true);
-                        if (!board[row][col + 1].isMine()) {
-                            board[row][col + 1].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                        if (!board[row + 1][col].isMine()) {
-                            board[row + 1][col].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                    }
-
-                }
-                //Upper right corner
-                else if (row == 0 && col == 9) {
-                    if (!board[row][col].isMine()) {
-                        board[row][col].setExposed(true);
-                        if (!board[row + 1][col].isMine()) {
-                            board[row + 1][col].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                        if (!board[row][col - 1].isMine()) {
-                            board[row][col - 1].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                    }
-                }
-                //Bottom left corner
-                else if (row == 9 && col == 0) {
-                    if (!board[row][col].isMine()) {
-                        board[row][col].setExposed(true);
-                        if (!board[row - 1][col].isMine()) {
-                            board[row - 1][col].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                        if (!board[row][col + 1].isMine()) {
-                            board[row][col + 1].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                    }
-                }
-
-                //Bottom right corner
-                else if (row == 9 && col == 9) {
-                    if (!board[row][col].isMine()) {
-                        board[row][col].setExposed(true);
-                        if (!board[row - 1][col].isMine()) {
-                            board[row - 1][col].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                        if (!board[row][col - 1].isMine()) {
-                            board[row][col - 1].setExposed(true);
-                        } else {
-                            temp++;
-                        }
-                    }
-                }
-                //Left horizontal
-                else if ((row >= 1 && row <= 9) && col == 0) {
-                    if (!board[row][col].isMine()) {
-                        board[row][col].setExposed(true);
-
-                    }
-                }
-                //Right horizontal
-                else if ((col >= 1 && col <= 9) && row == 0) {
-
-                }
-                //vertical edges
-
-                mineCount = temp;
-
-                //RECURSIVE
-
-
-            }
-
-        }
-
-    public int getScanMineCount() {return mineCount;}
+    /****
+     *
+     * @return amount of mines neighboring the selected tile
+     */
+    public int getMineCount() {return mineCount;}
 }

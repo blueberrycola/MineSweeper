@@ -8,12 +8,16 @@ public class Cell {
     //Overriding JButton.isSelected because it makes the image icons grey which is boring
     private boolean isSelected;
 
+    /****
+     * cell constructor
+     */
     public Cell() {
         mineCount = 0;
         isFlagged = false;
         isExposed = false;
         isMine = false;
     }
+
     public Cell(int mineCount, boolean isFlagged, boolean isExposed, boolean isMine) {
         this.mineCount = mineCount;
         this.isFlagged = isFlagged;
@@ -48,11 +52,17 @@ public class Cell {
 
     }
 
+    public int getMineCount() {
+        return this.mineCount;
+    }
+
     public void setMine(boolean flag) { this.isMine = flag; }
 
     public void setExposed(boolean flag) { this.isExposed = flag; }
 
     public void setFlagged(boolean flag) { this.isFlagged = flag; }
+
+    public void setMineCount(int count) {this.mineCount = count;}
 
 
 

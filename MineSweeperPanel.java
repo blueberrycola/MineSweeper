@@ -45,8 +45,9 @@ public class MineSweeperPanel extends JPanel {
      * Shows components of the GUI
      */
     public MineSweeperPanel() {
-        setLayout(new FlowLayout());
-        setPreferredSize(new Dimension(1000,850));
+
+        setLayout(new GridLayout(10,10));
+        setPreferredSize(new Dimension(1000,1000));
         setBackground(Color.white);
         setVisible(true);
 
@@ -141,10 +142,20 @@ public class MineSweeperPanel extends JPanel {
     }
 
     /****
-     * resets game
+     * resets game by setting all cell boolean values back to false
      */
     public void reset() {
-        System.out.println("FIXME: ADD RESET BUTTON");
+        for(int row = 0; row < 10; row++) {
+            for(int col = 0; col < 10; col++) {
+                iCell = game.getCell(row, col);
+                if(!iCell.isMine()) {
+                    iCell.setExposed(false);
+                    iCell.setMineCount(0);
+                } else {
+                    iCell.setFlagged(false);
+                }
+            }
+        }
     }
 
     /****

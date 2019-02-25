@@ -54,22 +54,24 @@ public class MineSweeperGame {
      * @param col
      */
     public void select(int row, int col) {
-        mineCount = 0;
-        bombCheck(row, col);
 
         if ((row >= 0 && row < 10) && (col >= 0 && col < 10)) {
-
+	        mineCount = bombCheck(row, col);
             if (!board[row][col].isExposed() && mineCount == 0) {
                 board[row][col].setExposed(true);
 
+                //Recursive 3x3 Scan
                 select(row + 1, col);
+                select(row + 1, col + 1);
+                select(row + 1, col - 1);
                 select(row - 1, col);
+                select(row - 1, col + 1);
+                select(row - 1, col - 1);
                 select(row, col - 1);
                 select(row, col + 1);
             } else {
-                board[row][col].setMineCount(mineCount);
-                System.out.println("Bombcheck equals " + board[row][col].getMineCount());
 
+                return;
             }
 
 
@@ -83,7 +85,7 @@ public class MineSweeperGame {
      * @param col
      * @return amount of bombs in a 3x3 area or a 2x3 area or a corner
      */
-    private void bombCheck(int row, int col) {
+    private int bombCheck(int row, int col) {
         int temp = 0;
         //Inside the perimeter
         if((row < 9 && row > 0) && (col < 9 && col > 0)) {
@@ -114,8 +116,7 @@ public class MineSweeperGame {
             if (board[row + 1][col + 1].isMine()) {
                 temp++;
             }
-            mineCount = temp;
-            temp = 0;
+            return temp;
 
         }
         //0-9 y axis, x always 0
@@ -128,8 +129,7 @@ public class MineSweeperGame {
                 if(board[row][col + 1].isMine()) {
                     temp++;
                 }
-                mineCount = temp;
-                temp = 0;
+                return temp;
             //Lower Corner
             } else if(row == 9) {
                 if(board[row - 1][col].isMine()) {
@@ -157,15 +157,14 @@ public class MineSweeperGame {
                     temp++;
                 }
             }
-            mineCount = temp;
-            temp = 0;
+            return temp;
         }
         // Right vertical edge
         if((row >= 0 && row <= 9) && col == 9) {
             //Corner
         }
 
-        mineCount = temp;
+        return temp;
 
 
     }

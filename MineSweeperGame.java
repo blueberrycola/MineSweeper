@@ -55,9 +55,15 @@ public class MineSweeperGame {
      */
     public void select(int row, int col) {
 
+        //Minesweeper tile borders
         if ((row >= 0 && row < 10) && (col >= 0 && col < 10)) {
-	        mineCount = bombCheck(row, col);
-            if (!board[row][col].isExposed() && mineCount == 0) {
+            //Checks if you clicked a mine
+            if(board[row][col].isMine()) {
+                status = GameStatus.Lost;
+            }
+
+            board[row][col].setMineCount(bombCheck(row, col));
+            if (!board[row][col].isExposed() && board[row][col].getMineCount() == 0 && !board[row][col].isMine()) {
                 board[row][col].setExposed(true);
 
                 //Recursive 3x3 Scan
@@ -70,7 +76,10 @@ public class MineSweeperGame {
                 select(row, col - 1);
                 select(row, col + 1);
             } else {
-
+                //If not a mine show the score
+                if(!board[row][col].isMine()) {
+                    board[row][col].setExposed(true);
+                }
                 return;
             }
 
@@ -138,8 +147,7 @@ public class MineSweeperGame {
                 if(board[row][col + 1].isMine()) {
                     temp++;
                 }
-                mineCount = temp;
-                temp = 0;
+                return temp;
             } else {
                 if(board[row + 1][col].isMine()) {
                     temp++;
@@ -156,12 +164,76 @@ public class MineSweeperGame {
                 if(board[row - 1][col + 1].isMine()) {
                     temp++;
                 }
+                return temp;
+            }
+        }
+        //0-9 x always 9
+        if((row >= 0 && row <= 9) && col == 9) {
+            //Upper Corner
+            if(row == 0) {
+                if(board[row + 1][col].isMine()) {
+                    temp++;
+                }
+                if(board[row][col - 1].isMine()) {
+                    temp++;
+                }
+                return temp;
+            }
+            //Lower Corner
+            else if(row == 9) {
+                if(board[row - 1][col].isMine()) {
+                    temp++;
+                }
+                if(board[row][col - 1].isMine()) {
+                    temp++;
+                }
+                return temp;
+            }else {
+                if(board[row + 1][col].isMine()){temp++;}
+                if(board[row + 1][col - 1].isMine()){temp++;}
+                if(board[row - 1][col].isMine()){temp++;}
+                if(board[row - 1][col - 1].isMine()){temp++;}
+                if(board[row][col - 1].isMine()){temp++;}
+                return temp;
+            }
+        }
+        //1-8 Horizontal edges
+        if(row == 0 && (col > 0 && col < 9)) {
+            if(board[row][col + 1].isMine()){
+                temp++;
+            }
+            if(board[row][col - 1].isMine()){
+                temp++;
+            }
+            if(board[row + 1][col + 1].isMine()){
+                temp++;
+            }
+            if(board[row + 1][col].isMine()){
+                temp++;
+            }
+            if(board[row + 1][col - 1].isMine()){
+                temp++;
             }
             return temp;
         }
-        // Right vertical edge
-        if((row >= 0 && row <= 9) && col == 9) {
-            //Corner
+
+        if(row == 9 && (col > 0 && col < 9)){
+            if(board[row][col + 1].isMine()){
+                temp++;
+            }
+            if(board[row][col - 1].isMine()){
+                temp++;
+            }
+            if(board[row - 1][col + 1].isMine()){
+                temp++;
+            }
+            if(board[row - 1][col].isMine()){
+                temp++;
+            }
+            if(board[row - 1][col - 1].isMine()){
+                temp++;
+            }
+            return temp;
         }
 
         return temp;
@@ -174,4 +246,11 @@ public class MineSweeperGame {
      * @return amount of mines neighboring the selected tile
      */
     public int getMineCount() {return mineCount;}
+    /****
+     * FIXME: IMPLEMENT
+     * @return GameStatus Enum
+     */
+    public GameStatus getGameStatus() {
+        return status;
+    }
 }

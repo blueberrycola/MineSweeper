@@ -57,10 +57,12 @@ public class MineSweeperPanel extends JPanel {
 
 
 
+
+
         /*Loop initializes images from project 2 package using the fileImg[] and tileImages[]
          *
          */
-        for(int i = 0; i < 7; i++) {
+        for(int i = 0; i < 8; i++) {
             String strIO = "project2/resources/";
             String filepath = "";
             try {
@@ -89,13 +91,6 @@ public class MineSweeperPanel extends JPanel {
 
     }
 
-    /****
-     * FIXME: IMPLEMENT
-     * @return GameStatus Enum
-     */
-    public GameStatus getGameStatus() {
-        return GameStatus.NotOverYet;
-    }
 
 
     /****
@@ -106,11 +101,15 @@ public class MineSweeperPanel extends JPanel {
         for(int row = 0; row < 10; row++) {
             for(int col = 0; col < 10; col++) {
                 iCell = game.getCell(row, col);
+
                 int temp = iCell.getMineCount();
 
                 if(iCell.isExposed() && (!iCell.isMine())){
+                    if(temp == 0) {
+                        board[row][col].setIcon(new ImageIcon (tileImages[7]));
+                    }
 
-                    if(temp == 1) {
+                    else if(temp == 1) {
                         board[row][col].setIcon(new ImageIcon (tileImages[1]));
                     }
                     else if(temp == 2) {
@@ -127,7 +126,7 @@ public class MineSweeperPanel extends JPanel {
                         board[row][col].setIcon(new ImageIcon (tileImages[5]));
                     }
 
-                    board[row][col].setText(""  + game.getMineCount());
+                    board[row][col].setText(""  + iCell.getMineCount());
 
                 }
                 //Draws bomb image on board
@@ -179,8 +178,12 @@ public class MineSweeperPanel extends JPanel {
                         iCell = game.getCell(row, col);
                         game.select(row, col);
 
-                        System.out.println(game.getMineCount());
+                        if(game.getGameStatus() == GameStatus.Lost) {
+                            JOptionPane.showMessageDialog(null, "You Lost!");
+                        }
+
                         displayBoard();
+
                     }
                 }
             }

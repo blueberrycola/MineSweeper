@@ -1,31 +1,81 @@
 package project2;
 
+/**********************************************************************
+ * GUI for MineSweeper
+ *
+ * @author Chase Johnston
+ * @author Nicholas Berens
+ * @version February 26, 2019
+ *********************************************************************/
+
 import javax.swing.*;
 import java.util.*;
 
 public class MineSweeperGame {
+    /** Array of tiles across the board */
     private Cell[][] board;
+    /** Status of game: Win, Lose, or still playing */
     private GameStatus status;
+    /** Instance variable for overall mines */
     private int totalMineCount = 10;
+    /** Instance variable for mines in area */
     private int mineCount;
 
-    /****
-     * game logic object constructor
-     */
-    public MineSweeperGame() {
-        board = new Cell[10][10];
+    public int rowVal;
+    public int colVal;
+    public int bombVal;
 
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
+    public int getRowVal() {
+        return rowVal;
+    }
+
+    public void setRowVal(int rowVal) {
+        this.rowVal = rowVal;
+    }
+
+    public int getColVal() {
+        return colVal;
+    }
+
+    public void setColVal(int colVal) {
+        this.colVal = colVal;
+    }
+
+    public int getBombVal() {
+        return bombVal;
+    }
+
+    public void setBombVal(int bombVal) {
+        this.bombVal = bombVal;
+    }
+
+    /******************************************************************
+     Constructor that initializes the board with mines and tile
+     properties
+     */
+    public MineSweeperGame(){
+        rowVal = 0;
+        colVal = 0;
+        bombVal = 0;
+    }
+
+    public MineSweeperGame(int row, int col, int bomb) {
+        this.rowVal = row;
+        this.colVal = col;
+        this.bombVal = bomb;
+        board = new Cell[row][col];
+
+        for (row = 0; row < getRowVal(); row++) {
+            for (col = 0; col < getColVal(); col++) {
                 board[row][col] = new Cell();
             }
         }
         Random rng = new Random();
         //Sets coords for mines (does not set image)
         int mineCount = 0;
-        while (mineCount < totalMineCount) {
-            int col = rng.nextInt(10);
-            int row = rng.nextInt(10);
+        while (mineCount < bombVal) {
+            col = rng.nextInt(getRowVal());
+            row = rng.nextInt(getColVal());
 
             if (!board[row][col].isMine()) {
                 board[row][col].setMine(true);
@@ -39,24 +89,26 @@ public class MineSweeperGame {
     }
 
     /****
-     *
-     * @param row
-     * @param col
-     * @return Cell Object
+     Accessor Method that returns a cell for a given row and column so
+     the panel can make the appropriate display
+     @param row
+     @param col
+     @return Cell Object
      */
     public Cell getCell(int row, int col) {
         return board[row][col];
     }
 
     /****
-     * Selects the tile you chose, if no neighboring mines start recursion attempt
-     * @param row
-     * @param col
+     Mutator Method that labels a cell as selected and recursively
+     accounts for cells that do not have neighboring mines.
+     @param row
+     @param col
      */
     public void select(int row, int col) {
 
         //Minesweeper tile borders
-        if ((row >= 0 && row < 10) && (col >= 0 && col < 10)) {
+        if ((row >= 0 && row < getRowVal()) && (col >= 0 && col < getColVal())) {
             //Checks if you clicked a mine
             if(board[row][col].isMine()) {
                 status = GameStatus.Lost;
@@ -89,15 +141,15 @@ public class MineSweeperGame {
     }
 
     /****
-     * Checks the amount of neighboring bombs next to the selected tile, only used in select()
-     * @param row
-     * @param col
-     * @return amount of bombs in a 3x3 area or a 2x3 area or a corner
+     Checks the amount of neighboring bombs next to the selected tile, only used in select()
+     @param row
+     @param col
+     @return amount of bombs in a 3x3 area or a 2x3 area or a corner
      */
     private int bombCheck(int row, int col) {
         int temp = 0;
         //Inside the perimeter
-        if((row < 9 && row > 0) && (col < 9 && col > 0)) {
+        if((row < (getRowVal() - 1) && row > 0) && (col < (getColVal() - 1) && col > 0)) {
             //middle two between select
             if (board[row + 1][col].isMine()) {
                 temp++;
@@ -129,7 +181,7 @@ public class MineSweeperGame {
 
         }
         //0-9 y axis, x always 0
-        if((row >= 0 && row <= 9) && col == 0) {
+        if((row >= 0 && row <= (getRowVal() - 1)) && col == 0) {
             //Upper Corner
             if(row == 0) {
                 if(board[row + 1][col].isMine()) {
@@ -139,8 +191,8 @@ public class MineSweeperGame {
                     temp++;
                 }
                 return temp;
-            //Lower Corner
-            } else if(row == 9) {
+                //Lower Corner
+            } else if(row == (getRowVal() - 1)) {
                 if(board[row - 1][col].isMine()) {
                     temp++;
                 }
@@ -168,7 +220,7 @@ public class MineSweeperGame {
             }
         }
         //0-9 x always 9
-        if((row >= 0 && row <= 9) && col == 9) {
+        if((row >= 0 && row <= (getRowVal() - 1)) && col == (getColVal() - 1)) {
             //Upper Corner
             if(row == 0) {
                 if(board[row + 1][col].isMine()) {
@@ -180,7 +232,7 @@ public class MineSweeperGame {
                 return temp;
             }
             //Lower Corner
-            else if(row == 9) {
+            else if(row == (getRowVal() - 1)) {
                 if(board[row - 1][col].isMine()) {
                     temp++;
                 }
@@ -198,7 +250,7 @@ public class MineSweeperGame {
             }
         }
         //1-8 Horizontal edges
-        if(row == 0 && (col > 0 && col < 9)) {
+        if(row == 0 && (col > 0 && col < (getColVal() - 1))) {
             if(board[row][col + 1].isMine()){
                 temp++;
             }
@@ -216,8 +268,8 @@ public class MineSweeperGame {
             }
             return temp;
         }
-
-        if(row == 9 && (col > 0 && col < 9)){
+        //Lower Horizontal Edge
+        if(row == (getRowVal() - 1) && (col > 0 && col < (getColVal() - 1))){
             if(board[row][col + 1].isMine()){
                 temp++;
             }

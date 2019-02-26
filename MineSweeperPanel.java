@@ -80,21 +80,30 @@ public class MineSweeperPanel extends JPanel {
     private String[] fileImg = {"resources/unpressedTile.jpg", "resources/scoreOne.jpg", "resources/scoreTwo.jpg", "resources/scoreThree.jpg",
             "resources/scoreFour.jpg", "resources/rareScore.jpg", "resources/bombTile.jpg", "resources/pressedTile.jpg"};
 
+    public MineSweeperPanel(){
+        rowVal = 0;
+        colVal = 0;
+        bombVal = 0;
+    }
+
 
     /******************************************************************
      Constructor creates grid of buttons with specified dimensions,
      includes listeners for the buttons and displays the proper jpgs
      to their respective tiles
      *****************************************************************/
-    public MineSweeperPanel() {
-        setLayout(new GridLayout(10, 10));
+    public MineSweeperPanel(int row, int col, int bomb) {
+        this.rowVal = row;
+        this.colVal = col;
+        this.bombVal = bomb;
+        setLayout(new GridLayout(row, col));
         setPreferredSize(new Dimension(1000,1000));
         setBackground(Color.white);
         setVisible(true);
 
-        game = new MineSweeperGame();
+        game = new MineSweeperGame(row, col, bomb);
 
-        board = new JButton[10][10];
+        board = new JButton[row][col];
 
 
         /**
@@ -115,12 +124,12 @@ public class MineSweeperPanel extends JPanel {
 /** Button Listener for buttons to enable responsiveness across board*/
         ButtonListener listener = new ButtonListener();
         //Initialization of 10x10 JButton 2D Array + placement
-        for(int row = 0; row < 10; row++) {
-            for(int col = 0; col < 10; col++) {
-                board[row][col] = new JButton(" ");
-                board[row][col].addActionListener(listener);
-                board[row][col].setIcon(new ImageIcon(tileImages[0]));
-                add(board[row][col]);
+        for(int row1 = 0; row1 < getRowVal(); row1++) {
+            for(int col1 = 0; col1 < getColVal(); col1++) {
+                board[row1][col1] = new JButton(" ");
+                board[row1][col1].addActionListener(listener);
+                board[row1][col1].setIcon(new ImageIcon(tileImages[0]));
+                add(board[row1][col1]);
             }
         }
         //Horizontal glue + JMenu + Score Panel
@@ -137,8 +146,8 @@ public class MineSweeperPanel extends JPanel {
      *****************************************************************/
     private void displayBoard() {
 
-        for(int row = 0; row < 10; row++) {
-            for(int col = 0; col < 10; col++) {
+        for(int row = 0; row < getRowVal(); row++) {
+            for(int col = 0; col < getColVal(); col++) {
                 iCell = game.getCell(row, col);
 
                 int temp = iCell.getMineCount();
@@ -183,8 +192,8 @@ public class MineSweeperPanel extends JPanel {
      * resets game by setting all cell boolean values back to false
      */
     public void reset() {
-        for(int row = 0; row < 10; row++) {
-            for(int col = 0; col < 10; col++) {
+        for(int row = 0; row < getRowVal(); row++) {
+            for(int col = 0; col < getColVal(); col++) {
                 iCell = game.getCell(row, col);
                 if(!iCell.isMine()) {
                     iCell.setExposed(false);
@@ -211,8 +220,8 @@ public class MineSweeperPanel extends JPanel {
      */
     private class ButtonListener implements ActionListener{
         public void actionPerformed (ActionEvent event) {
-            for(int row = 0; row < 10; row++) {
-                for(int col = 0; col < 10; col++) {
+            for(int row = 0; row < getRowVal(); row++) {
+                for(int col = 0; col < getColVal(); col++) {
                     if(board[row][col] == event.getSource()) {
                         iCell = game.getCell(row, col);
                         game.select(row, col);

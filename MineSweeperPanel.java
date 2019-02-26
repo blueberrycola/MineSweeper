@@ -7,13 +7,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+/**********************************************************************
+ * Panel for MineSweeper
+ *
+ * @author Chase Johnston
+ * @author Nicholas Berens
+ * @version February 26, 2019
+ *********************************************************************/
+
 public class MineSweeperPanel extends JPanel {
+    /** Array of tiles for the board layout */
     private JButton[][] board;
+    /** Instantiates variable for cell properties */
     private Cell iCell;
+    /** Quit button */
     private JButton quitButton;
 
-
+    /** Instantiates game object of type MineSweeperGame */
     private MineSweeperGame game;
+
+    /** Instantiates Menu Options */
     private JPanel winLoss, buttonPanel;
     private Menu FileMenu;
     private JMenuBar menuBar;
@@ -41,12 +54,13 @@ public class MineSweeperPanel extends JPanel {
             "resources/scoreFour.jpg", "resources/rareScore.jpg", "resources/bombTile.jpg", "resources/pressedTile.jpg"};
 
 
-    /****
-     * Shows components of the GUI
-     */
+    /******************************************************************
+     Constructor creates grid of buttons with specified dimensions,
+     includes listeners for the buttons and displays the proper jpgs
+     to their respective tiles
+     *****************************************************************/
     public MineSweeperPanel() {
-
-        setLayout(new GridLayout(10,10));
+        setLayout(new GridLayout(MineSweeperGUI.row, MineSweeperGUI.col));
         setPreferredSize(new Dimension(1000,1000));
         setBackground(Color.white);
         setVisible(true);
@@ -56,11 +70,8 @@ public class MineSweeperPanel extends JPanel {
         board = new JButton[10][10];
 
 
-
-
-
-        /*Loop initializes images from project 2 package using the fileImg[] and tileImages[]
-         *
+        /**
+        Loop initializes images from project 2 package using the fileImg[] and tileImages[]
          */
         for(int i = 0; i < 8; i++) {
             String strIO = "project2/resources/";
@@ -74,7 +85,7 @@ public class MineSweeperPanel extends JPanel {
         }
 
 
-
+/** Button Listener for buttons to enable responsiveness across board*/
         ButtonListener listener = new ButtonListener();
         //Initialization of 10x10 JButton 2D Array + placement
         for(int row = 0; row < 10; row++) {
@@ -83,7 +94,7 @@ public class MineSweeperPanel extends JPanel {
                 board[row][col].addActionListener(listener);
                 board[row][col].setIcon(new ImageIcon(tileImages[0]));
                 add(board[row][col]);
-                }
+            }
         }
         //Horizontal glue + JMenu + Score Panel
 
@@ -93,9 +104,10 @@ public class MineSweeperPanel extends JPanel {
 
 
 
-    /****
-     * displays the board by checking each individual cell
-     */
+    /******************************************************************
+     Constructor that displays the board by checking each individual
+     cell
+     *****************************************************************/
     private void displayBoard() {
 
         for(int row = 0; row < 10; row++) {
@@ -183,15 +195,9 @@ public class MineSweeperPanel extends JPanel {
                         }
 
                         displayBoard();
-
                     }
                 }
             }
         }
     }
-
-
 }
-
-
-

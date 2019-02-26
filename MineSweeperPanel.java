@@ -36,6 +36,33 @@ public class MineSweeperPanel extends JPanel {
     private int tileCount;
     private int totMines;
 
+    public int rowVal;
+    public int colVal;
+    public int bombVal;
+
+    public int getRowVal() {
+        return rowVal;
+    }
+
+    public void setRowVal(int rowVal) {
+        this.rowVal = rowVal;
+    }
+
+    public int getColVal() {
+        return colVal;
+    }
+
+    public void setColVal(int colVal) {
+        this.colVal = colVal;
+    }
+
+    public int getBombVal() {
+        return bombVal;
+    }
+
+    public void setBombVal(int bombVal) {
+        this.bombVal = bombVal;
+    }
 
     /***********************************
      * Arrays used for easy image loading for ImageIcons
@@ -60,7 +87,7 @@ public class MineSweeperPanel extends JPanel {
      to their respective tiles
      *****************************************************************/
     public MineSweeperPanel() {
-        setLayout(new GridLayout(MineSweeperGUI.row, MineSweeperGUI.col));
+        setLayout(new GridLayout(10, 10));
         setPreferredSize(new Dimension(1000,1000));
         setBackground(Color.white);
         setVisible(true);

@@ -18,11 +18,9 @@ public class MineSweeperGUI extends MineSweeperPanel {
     public static MineSweeperGUI rowSize = new MineSweeperGUI();
     public static MineSweeperGUI colSize = new MineSweeperGUI();
     public static MineSweeperGUI bombCount = new MineSweeperGUI();
-    public static int row = 10;
-    public static int col = 10;
-    public static int bomb = 10;
 
     public static void main(String args[]) {
+        MineSweeperPanel panel1 = new MineSweeperPanel();
         int row;
         int col;
         int bomb;
@@ -43,9 +41,9 @@ public class MineSweeperGUI extends MineSweeperPanel {
             }
         }
         while((row > 30 || row < 3) || (col > 30 || col < 3) || (bomb > ((col * row) - 1)));
-        MineSweeperGUI.row = row;
-        MineSweeperGUI.col = col;
-        MineSweeperGUI.bomb = bomb;
+        panel1.setRowVal(row);
+        panel1.setColVal(col);
+        panel1.setBombVal(bomb);
 //        size.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             JFrame frame = new JFrame("Minesweeper");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

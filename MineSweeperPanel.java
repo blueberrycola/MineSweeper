@@ -105,7 +105,6 @@ public class MineSweeperPanel extends JPanel {
 
         board = new JButton[row][col];
 
-
         /**
         Loop initializes images from project 2 package using the fileImg[] and tileImages[]
          */

@@ -293,6 +293,7 @@ public class MineSweeperGame {
 
     }
 
+
     /****
      *
      * @return amount of mines neighboring the selected tile

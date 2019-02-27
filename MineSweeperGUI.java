@@ -24,9 +24,12 @@ public class MineSweeperGUI extends MineSweeperPanel {
         String message1;
         String message2;
         do {
-            message = JOptionPane.showInputDialog(null, "Enter Row Size between 3 and 30", "Size", JOptionPane.PLAIN_MESSAGE);
-            message1 = JOptionPane.showInputDialog(null, "Enter Column Size between 3 and 30", "Size", JOptionPane.PLAIN_MESSAGE);
-            message2 = JOptionPane.showInputDialog(null, "Enter Appropriate Mine Count", "Size", JOptionPane.PLAIN_MESSAGE);
+            message = JOptionPane.showInputDialog(null, "Enter Row Size between 3 and 30",
+                    "Size", JOptionPane.PLAIN_MESSAGE);
+            message1 = JOptionPane.showInputDialog(null, "Enter Column Size between 3 and 30",
+                    "Size", JOptionPane.PLAIN_MESSAGE);
+            message2 = JOptionPane.showInputDialog(null, "Enter Appropriate Mine Count",
+                    "Size", JOptionPane.PLAIN_MESSAGE);
             try {
                 row = parseInt(message);
                 col = parseInt(message1);
@@ -38,6 +41,7 @@ public class MineSweeperGUI extends MineSweeperPanel {
             if(message.equals("") || message1.equals("") || message2.equals("")){
                 break;
             }
+
         }
         while ((row > 30 || row < 3) || (col > 30 || col < 3) || (bomb > ((col * row) - 1)));
 
@@ -57,34 +61,7 @@ public class MineSweeperGUI extends MineSweeperPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         MineSweeperPanel panel = new MineSweeperPanel(row, col, bomb);
         frame.getContentPane().add(panel);
-
-
         frame.pack();
-
-        frame.addMouseListener(new MouseListener() {
-            public void mousePressed(MouseEvent me) {
-            }
-
-            public void mouseReleased(MouseEvent me) {
-            }
-
-            public void mouseEntered(MouseEvent me) {
-            }
-
-            public void mouseExited(MouseEvent me) {
-            }
-
-            public void mouseClicked(MouseEvent me) {
-                if (me.getButton() == MouseEvent.BUTTON1) {
-                    System.out.println("Tile is clicked");
-                }
-
-                if (me.getButton() == MouseEvent.BUTTON3) {
-                    System.out.print("Tile is flagged!");
-                }
-            }
-        });
-
         frame.setVisible(true);
     }
 }

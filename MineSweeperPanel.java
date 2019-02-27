@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 /**********************************************************************
@@ -72,13 +74,17 @@ public class MineSweeperPanel extends JPanel {
      * 2: scoreTwo
      * 3: scoreThree
      * 4: scoreFour
-     * 5: rareScore
-     * 6: bombTile
-     * 7: pressedTile
+     * 5: scoreFive
+     * 6: scoreSix
+     * 7: scoreSeven
+     * 8: pressedTile
+     * 9: flaggedTile
+     * 10: bombTile
      **********************************/
-    private Image[] tileImages = new Image[8];
+    private Image[] tileImages = new Image[11];
     private String[] fileImg = {"resources/unpressedTile.jpg", "resources/scoreOne.jpg", "resources/scoreTwo.jpg", "resources/scoreThree.jpg",
-            "resources/scoreFour.jpg", "resources/rareScore.jpg", "resources/bombTile.jpg", "resources/pressedTile.jpg"};
+            "resources/scoreFour.jpg", "resources/scoreFive.jpg", "resources/scoreSix.jpg", "resources/scoreSeven.jpg",
+            "resources/pressedTile.jpg", "resources/flaggedTile.jpg", "resources/bombTile.jpg"};
 
     public MineSweeperPanel(){
         rowVal = 0;
@@ -105,10 +111,11 @@ public class MineSweeperPanel extends JPanel {
 
         board = new JButton[row][col];
 
+
         /**
         Loop initializes images from project 2 package using the fileImg[] and tileImages[]
          */
-        for(int i = 0; i < 8; i++) {
+        for(int i = 0; i < 11; i++) {
             String strIO = "project2/resources/";
             String filepath = "";
             try {
@@ -126,7 +133,8 @@ public class MineSweeperPanel extends JPanel {
         for(int row1 = 0; row1 < getRowVal(); row1++) {
             for(int col1 = 0; col1 < getColVal(); col1++) {
                 board[row1][col1] = new JButton(" ");
-                board[row1][col1].addActionListener(listener);
+                board[row1][col1].addMouseListener(listener);
+
                 board[row1][col1].setIcon(new ImageIcon(tileImages[0]));
                 add(board[row1][col1]);
             }
@@ -151,9 +159,9 @@ public class MineSweeperPanel extends JPanel {
 
                 int temp = iCell.getMineCount();
 
-                if(iCell.isExposed() && (!iCell.isMine())){
+                if(iCell.isExposed() && (!iCell.isMine()) && !iCell.isFlagged()){
                     if(temp == 0) {
-                        board[row][col].setIcon(new ImageIcon (tileImages[7]));
+                        board[row][col].setIcon(new ImageIcon (tileImages[8]));
                     }
 
                     else if(temp == 1) {
@@ -169,16 +177,22 @@ public class MineSweeperPanel extends JPanel {
                     else if(temp == 4) {
                         board[row][col].setIcon(new ImageIcon (tileImages[4]));
                     }
-                    else if(temp >= 5) {
+                    else if(temp == 5) {
                         board[row][col].setIcon(new ImageIcon (tileImages[5]));
+                    }
+                    else if(temp == 6) {
+                        board[row][col].setIcon(new ImageIcon (tileImages[6]));
+                    }
+                    else if(temp == 7) {
+                        board[row][col].setIcon(new ImageIcon(tileImages[7]));
                     }
 
                     board[row][col].setText(""  + iCell.getMineCount());
 
                 }
                 //Draws bomb image on board
-                if(iCell.isMine()) {
-                    board[row][col].setIcon(new ImageIcon(tileImages[6]));
+                if(iCell.isMine() && !iCell.isFlagged()) {
+                    board[row][col].setIcon(new ImageIcon(tileImages[10]));
                 }
 
 
@@ -197,6 +211,7 @@ public class MineSweeperPanel extends JPanel {
                 if(!iCell.isMine()) {
                     iCell.setExposed(false);
                     iCell.setMineCount(0);
+                    board[row][col].setIcon(new ImageIcon(tileImages[7]));
                 } else {
                     iCell.setFlagged(false);
                 }
@@ -217,22 +232,65 @@ public class MineSweeperPanel extends JPanel {
     /****
      * button listener inner class
      */
-    private class ButtonListener implements ActionListener{
-        public void actionPerformed (ActionEvent event) {
-            for(int row = 0; row < getRowVal(); row++) {
-                for(int col = 0; col < getColVal(); col++) {
-                    if(board[row][col] == event.getSource()) {
-                        iCell = game.getCell(row, col);
-                        game.select(row, col);
+    private class ButtonListener implements MouseListener {
 
-                        if(game.getGameStatus() == GameStatus.Lost) {
-                            JOptionPane.showMessageDialog(null, "You Lost!");
+
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if(e.getButton() == MouseEvent.BUTTON1) {
+                for(int row = 0; row < getRowVal(); row++) {
+                    for(int col = 0; col < getColVal(); col++) {
+                        if(board[row][col] == e.getSource()) {
+                            iCell = game.getCell(row, col);
+                            game.select(row, col);
+                            if(game.getGameStatus() == GameStatus.Lost) {
+                                JOptionPane.showMessageDialog(null, "You Lost! Resetting Game");
+
+                            }
+                            displayBoard();
                         }
 
-                        displayBoard();
+                    }
+                }
+            }
+
+            if(e.getButton() == MouseEvent.BUTTON3) {
+                for(int row = 0; row < getRowVal(); row++) {
+                    for (int col = 0; col < getColVal(); col++) {
+                        if(board[row][col] == e.getSource()) {
+                            iCell = game.getCell(row, col);
+                            if(iCell.isMine()) {
+                                //Sets a flag image and state
+                                board[row][col].setIcon(new ImageIcon(tileImages[9]));
+                                iCell.setFlagged(true);
+                            }
+                        }
                     }
                 }
             }
         }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
     }
+
+
 }

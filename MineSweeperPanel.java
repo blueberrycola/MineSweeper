@@ -3,16 +3,9 @@ package project2;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.nio.channels.NotYetBoundException;
-
-import static project2.GameStatus.Lost;
-import static project2.GameStatus.NotOverYet;
-import static project2.GameStatus.Won;
 
 /**********************************************************************
  * Panel for MineSweeper
@@ -34,10 +27,7 @@ public class MineSweeperPanel extends JPanel {
     private MineSweeperGame game;
 
     /** Instantiates Menu Options */
-    private JPanel winLoss, buttonPanel;
-    private Menu FileMenu;
-    private JMenuBar menuBar;
-    private JMenuItem resetGame;
+    private JPanel winLoss;
 
     //Variables depending on user input
     private int tileCount;
@@ -103,52 +93,52 @@ public class MineSweeperPanel extends JPanel {
      includes listeners for the buttons and displays the proper jpgs
      to their respective tiles
      *****************************************************************/
-    public MineSweeperPanel( int row, int col, int bomb){
-            this.rowVal = row;
-            this.colVal = col;
-            this.bombVal = bomb;
-            setLayout(new GridLayout(row, col));
-            setPreferredSize(new Dimension(1000, 1000));
-            setBackground(Color.white);
-            setVisible(true);
+    public MineSweeperPanel(int row, int col, int bomb) {
+        this.rowVal = row;
+        this.colVal = col;
+        this.bombVal = bomb;
+        setLayout(new GridLayout(row, col));
+        setPreferredSize(new Dimension(1000,1000));
+        setBackground(Color.white);
+        setVisible(true);
 
-            game = new MineSweeperGame(row, col, bomb);
+        game = new MineSweeperGame(row, col, bomb);
 
-            board = new JButton[row][col];
+        board = new JButton[row][col];
 
 
-            /**
-             Loop initializes images from project 2 package using the fileImg[] and tileImages[]
-             */
-            for (int i = 0; i < 12; i++) {
-                String strIO = "project2/resources/";
-                String filepath = "";
-                try {
-                    tileImages[i] = ImageIO.read(getClass().getResource(fileImg[i]));
+        /**
+        Loop initializes images from project 2 package using the fileImg[] and tileImages[]
+         */
+        for(int i = 0; i < 12; i++) {
+            String strIO = "project2/resources/";
+            String filepath = "";
+            try {
+                tileImages[i] = ImageIO.read(getClass().getResource(fileImg[i]));
 
-                } catch (IOException ex) {
+            } catch (IOException ex) {
 
-                }
             }
+        }
 
 
 /** Button Listener for buttons to enable responsiveness across board*/
-            ButtonListener listener = new ButtonListener();
-            //Initialization of 10x10 JButton 2D Array + placement
-            for (int row1 = 0; row1 < getRowVal(); row1++) {
-                for (int col1 = 0; col1 < getColVal(); col1++) {
-                    board[row1][col1] = new JButton(" ");
-                    board[row1][col1].addMouseListener(listener);
+        ButtonListener listener = new ButtonListener();
+        //Initialization of 10x10 JButton 2D Array + placement
+        for(int row1 = 0; row1 < getRowVal(); row1++) {
+            for(int col1 = 0; col1 < getColVal(); col1++) {
+                board[row1][col1] = new JButton(" ");
+                board[row1][col1].addMouseListener(listener);
 
-                    board[row1][col1].setIcon(new ImageIcon(tileImages[0]));
-                    add(board[row1][col1]);
-                }
+                board[row1][col1].setIcon(new ImageIcon(tileImages[0]));
+                add(board[row1][col1]);
             }
-            //Horizontal glue + JMenu + Score Panel
-
-            displayBoard();
-
         }
+        //Horizontal glue + JMenu + Score Panel
+
+        displayBoard();
+
+    }
 
 
 
@@ -162,14 +152,13 @@ public class MineSweeperPanel extends JPanel {
             for(int col = 0; col < getColVal(); col++) {
                 iCell = game.getCell(row, col);
 
-                //function will store the neighboring mine count into a temp variable
                 int temp = iCell.getMineCount();
 
-                //displays all score tiles, unpressed tiles, and pressed tiles
                 if(iCell.isExposed() && (!iCell.isMine()) && !iCell.isFlagged()){
                     if(temp == 0) {
                         board[row][col].setIcon(new ImageIcon (tileImages[9]));
                     }
+
                     else if(temp == 1) {
                         board[row][col].setIcon(new ImageIcon (tileImages[1]));
                     }
@@ -178,6 +167,7 @@ public class MineSweeperPanel extends JPanel {
                     }
                     else if(temp == 3) {
                         board[row][col].setIcon(new ImageIcon (tileImages[3]));
+
                     }
                     else if(temp == 4) {
                         board[row][col].setIcon(new ImageIcon (tileImages[4]));
@@ -189,12 +179,13 @@ public class MineSweeperPanel extends JPanel {
                         board[row][col].setIcon(new ImageIcon (tileImages[6]));
                     }
                     else if(temp == 7) {
-                        board[row][col].setIcon(new ImageIcon (tileImages[7]));
+                        board[row][col].setIcon(new ImageIcon(tileImages[7]));
                     }
+
                     else if(temp == 8) {
-                        board[row][col].setIcon(new ImageIcon (tileImages[8]));
+                        board[row][col].setIcon(new ImageIcon(tileImages[8]));
                     }
-                    //sets text next to tile if it was pressed
+
                     board[row][col].setText(""  + iCell.getMineCount());
 
                 }
@@ -206,6 +197,7 @@ public class MineSweeperPanel extends JPanel {
 
             }
         }
+        //if()
     }
 
     /****
@@ -218,7 +210,10 @@ public class MineSweeperPanel extends JPanel {
                 if(!iCell.isMine()) {
                     iCell.setExposed(false);
                     iCell.setMineCount(0);
+                    iCell.setFlagged(false);
                     board[row][col].setIcon(new ImageIcon(tileImages[0]));
+                    board[row][col].setText("");
+                    displayBoard();
                 } else {
                     iCell.setFlagged(false);
                 }
@@ -235,6 +230,36 @@ public class MineSweeperPanel extends JPanel {
     }
     private void setTotMines(int tot) {totMines = tot;}
 
+    /****
+     * Method that changes GameStatus enum to either NotOverYet or Won
+     */
+    public void winCheck() {
+        int bombCount = 0;
+        for(int row = 0; row < getRowVal(); row++) {
+            for(int col = 0; col < getColVal(); col++) {
+                iCell = game.getCell(row, col);
+                if(iCell.isFlagged()) {
+                    bombCount++;
+                }
+            }
+        }
+
+        if(bombCount == bombVal) {
+            game.setWin();
+            JOptionPane.showMessageDialog(null, "You won the game!");
+            game = new MineSweeperGame(getRowVal(), getColVal(), getBombVal());
+            for(int row = 0; row < getRowVal(); row++) {
+                for(int col = 0; col < getColVal(); col++) {
+                    board[row][col].setText("");
+                }
+            }
+            displayBoard();
+            reset();
+        } else {
+            game.setNotOver();
+        }
+    }
+
 
     /****
      * button listener inner class
@@ -245,60 +270,31 @@ public class MineSweeperPanel extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            MineSweeperGame win = new MineSweeperGame();
-            MineSweeperGame loss = new MineSweeperGame();
             if(e.getButton() == MouseEvent.BUTTON1) {
                 for(int row = 0; row < getRowVal(); row++) {
                     for(int col = 0; col < getColVal(); col++) {
                         if(board[row][col] == e.getSource()) {
                             iCell = game.getCell(row, col);
                             game.select(row, col);
-                            //if the game was lost we update the score and go again!
-                            if(game.getGameStatus() == Lost) {
-                                JOptionPane.showMessageDialog(null, "You Lost!\nWins: " + win.getWinVal() +
-                                        " Losses: " + loss.getLossVal());
-                                //sets up a fresh, new board for us
+                            if(game.getGameStatus() == GameStatus.Lost) {
+                                JOptionPane.showMessageDialog(null, "You Lost! Resetting Game");
                                 game = new MineSweeperGame(getRowVal(), getColVal(), getBombVal());
-                                //the nested for loops get rid of the score values on the side at the start
                                 for(row = 0; row < getRowVal(); row++) {
-                                    for (col = 0; col < getColVal(); col++) {
+                                    for(col = 0; col < getColVal(); col++) {
                                         board[row][col].setText("");
                                     }
                                 }
-                                //display the board
-                                displayBoard();
-                                //reset our parameters
                                 reset();
-                                //reset our game status
-                                game.setGameStatus(NotOverYet);
-                            }
 
-                            //if the game was won we update the score and go again!
-                            if(game.getGameStatus() == Won) {
-                                JOptionPane.showMessageDialog(null, "You Won! You are a Super Star!\nWins: " + win.getWinVal() +
-                                        " Losses: " + loss.getLossVal());
-                                //sets up a fresh, new board for us
-                                game = new MineSweeperGame(getRowVal(), getColVal(), getBombVal());
-                                //nested for loops get rid of score values at the start
-                                for(row = 0; row < getRowVal(); row++) {
-                                    for (col = 0; col < getColVal(); col++) {
-                                        board[row][col].setText("");
-                                    }
-                                }
-                                //displays the board
-                                displayBoard();
-                                //resets our parameters
-                                reset();
-                                //resets our game status
-                                game.setGameStatus(NotOverYet);
                             }
                             displayBoard();
+                            winCheck();
                         }
 
                     }
                 }
             }
-            //designed to enable the flagging feature inherent to minesweeper
+
             if(e.getButton() == MouseEvent.BUTTON3) {
                 for(int row = 0; row < getRowVal(); row++) {
                     for (int col = 0; col < getColVal(); col++) {
@@ -306,12 +302,13 @@ public class MineSweeperPanel extends JPanel {
                             iCell = game.getCell(row, col);
                             if(iCell.isMine()) {
                                 //Sets a flag image and state
-                                board[row][col].setIcon(new ImageIcon(tileImages[9]));
+                                board[row][col].setIcon(new ImageIcon(tileImages[10]));
                                 iCell.setFlagged(true);
                             }
                         }
                     }
                 }
+                winCheck();
             }
         }
 

@@ -11,19 +11,42 @@ package project2;
 import javax.swing.*;
 import java.util.*;
 
+import static project2.GameStatus.Won;
+
 public class MineSweeperGame {
     /** Array of tiles across the board */
     private Cell[][] board;
     /** Status of game: Win, Lose, or still playing */
     private GameStatus status;
-    /** Instance variable for overall mines */
-    private int totalMineCount = 10;
     /** Instance variable for mines in area */
     private int mineCount;
 
     public int rowVal;
     public int colVal;
     public int bombVal;
+    public int winVal;
+    public int lossVal;
+
+    /**
+     Here are a bunch of getters and setters that are used frequently in for loops that deal with recursion functioning,
+     general display functioning, and many other capacities throughout the different classes
+      @return
+     */
+    public int getWinVal() {
+        return winVal;
+    }
+
+    public void setWinVal(int winVal) {
+        this.winVal = winVal;
+    }
+
+    public int getLossVal() {
+        return lossVal;
+    }
+
+    public void setLossVal(int lossVal) {
+        this.lossVal = lossVal;
+    }
 
     public int getRowVal() {
         return rowVal;
@@ -57,8 +80,16 @@ public class MineSweeperGame {
         rowVal = 0;
         colVal = 0;
         bombVal = 0;
+        winVal = 0;
+        lossVal = 0;
     }
 
+    /**
+     Constructor that puts variables into the context of the game logic
+     @param row
+     @param col
+     @param bomb
+     */
     public MineSweeperGame(int row, int col, int bomb) {
         this.rowVal = row;
         this.colVal = col;
@@ -106,12 +137,16 @@ public class MineSweeperGame {
      @param col
      */
     public void select(int row, int col) {
-
+        int totExposed = (getRowVal() * getColVal() - getBombVal());
+        int temp = 0;
+        int temp1 = 0;
         //Minesweeper tile borders
         if ((row >= 0 && row < getRowVal()) && (col >= 0 && col < getColVal())) {
             //Checks if you clicked a mine
             if(board[row][col].isMine()) {
                 status = GameStatus.Lost;
+                lossVal++;
+                setLossVal(lossVal);
             }
 
             board[row][col].setMineCount(bombCheck(row, col));
@@ -131,6 +166,21 @@ public class MineSweeperGame {
                 //If not a mine show the score
                 if(!board[row][col].isMine()) {
                     board[row][col].setExposed(true);
+                }
+//                for(row = 0; row <= getRowVal(); row++){
+//                    for(col = 0; col <= getColVal(); col++){
+//                        if(board[row][col].isExposed()){
+//                            temp++;
+//                        }
+//                    }
+//                }
+                System.out.println(temp);
+                temp1 = totExposed - temp;
+                System.out.println(temp1);
+                if(temp1 == 0){
+                    setGameStatus(Won);
+                    winVal++;
+                    setWinVal(winVal);
                 }
                 return;
             }
@@ -305,5 +355,9 @@ public class MineSweeperGame {
      */
     public GameStatus getGameStatus() {
         return status;
+    }
+
+    public void setGameStatus(GameStatus status) {
+        this.status = status;
     }
 }

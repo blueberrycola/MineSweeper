@@ -1,10 +1,14 @@
 package project2;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import static java.lang.Integer.parseInt;
+import static project2.GameStatus.Lost;
+import static project2.GameStatus.Won;
 
 /**********************************************************************
  * GUI for MineSweeper
@@ -16,6 +20,8 @@ import static java.lang.Integer.parseInt;
 
 public class MineSweeperGUI extends MineSweeperPanel {
 
+
+
     public static void main(String args[]) {
         int row = 0;
         int col = 0;
@@ -23,6 +29,9 @@ public class MineSweeperGUI extends MineSweeperPanel {
         String message;
         String message1;
         String message2;
+
+        MineSweeperGame game = new MineSweeperGame();
+
         do {
             message = JOptionPane.showInputDialog(null, "Enter Row Size between 3 and 30",
                     "Size", JOptionPane.PLAIN_MESSAGE);
@@ -43,7 +52,7 @@ public class MineSweeperGUI extends MineSweeperPanel {
             }
 
         }
-        while ((row > 30 || row < 3) || (col > 30 || col < 3) || (bomb > ((col * row) - 1)));
+        while ((row > 30 || row < 3) || (col > 30 || col < 3) || (bomb > ((col * row) - 1)) || (bomb <= 0));
 
 //        MineSweeperPanel panel1 = new MineSweeperPanel(row, col, bomb);
         MineSweeperPanel panel1 = new MineSweeperPanel(row, col, bomb);
@@ -65,5 +74,3 @@ public class MineSweeperGUI extends MineSweeperPanel {
         frame.setVisible(true);
     }
 }
-
-
